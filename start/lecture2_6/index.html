@@ -20,7 +20,44 @@
 <body>
   <script>
     //Place your code here
-  </script> 
+    const npcs = [];
+
+    // for (let a = 0; a < 10; a++) {
+    //   npcs.push(createNPC());
+    // }
+    let i = 0;
+    while (i < 10) {
+      npcs.push(createNPC());
+      i++;
+    }
+    // npcs.push(createNPC());
+    // npcs.push(createNPC());
+
+    const npc = npcs[0];
+    console.log("npcs[0] has the following properties...")
+
+    for (let prop in npc) {
+      console.log(prop + " : " + npc[prop]);
+    }
+
+    i = 0;
+
+    npcs.forEach(npc => {
+      console.log("NPC no ." + i + " uses a " + npc.weapon + " as it chosen weapon.");
+      i++;
+    });
+
+    function createNPC() {
+      // Math.random will return the value between 0 to 1, but not a true 1
+      const power = Math.random() * 0.5 + 0.5;
+      const weapons = ["sword", "pistol", "axe", "spear"];
+      const weapon = weapons[Math.floor(Math.random() * weapons.length)];
+      const strength = Math.random() * 2 + 1;
+      const damage = 0;
+
+      return { power, weapon, strength, damage };
+    }
+  </script>
 </body>
 
 </html>
