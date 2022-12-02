@@ -9,7 +9,7 @@ class App{
 		const container = document.createElement( 'div' );
 		document.body.appendChild( container );
         
-		this.camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 100 );
+		this.camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 200 );
 		this.camera.position.set( 0, 0, 5 );
         
 		this.scene = new THREE.Scene();
@@ -30,6 +30,8 @@ class App{
 		this.setEnvironment();
 		
         //Add code here to code-along with the video
+        this.loadingBar = new LoadingBar();
+        this.loadGLTF();
 
         this.controls = new OrbitControls( this.camera, this.renderer.domElement );
         
@@ -55,7 +57,30 @@ class App{
     }
     
     loadGLTF(){
-        
+        // const loader = new GLTFLoader().setPath('../../assets/plane/');
+        const loader = new GLTFLoader().setPath('../../assets/seacity/');
+        loader.load(
+            // 'microplane.glb',
+            'SeaCity.glb',
+            // 'SeaCity_2.glb',
+            gltf => {
+                this.scene.add(gltf.scene);
+                const bbox = new THREE.Box3().setFromObject(gltf.scene);
+                console.log(`min:${bbox.min.x.toFixed(2)},
+                ${bbox.min.y.toFixed(2)}, ${bbox.min.z.toFixed(2)}
+                max:${bbox.max.x.toFixed(2)},
+                ${bbox.max.y.toFixed(2)}, ${bbox.max.z.toFixed(2)}`);
+                this.loadingBar.visible = false;
+                this.renderer.setAnimationLoop(this.render.bind(this));
+                this.plane = gltf.scene;
+            },
+            xhr => {
+                this.loadingBar.progress = (xhr.loaded/xhr.total);
+            },
+            err => {
+                console.error(err);
+            }
+        )
     }
     
     resize(){
@@ -64,8 +89,8 @@ class App{
         this.renderer.setSize( window.innerWidth, window.innerHeight );  
     }
     
-	render( ) {   
-        this.plane.rotateY( 0.01 );
+	render() {   
+        // this.plane.rotateY( 0.01 );
         this.renderer.render( this.scene, this.camera );
     }
 }
